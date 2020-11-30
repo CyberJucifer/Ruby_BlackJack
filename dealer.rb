@@ -6,7 +6,7 @@ class Dealer < User
     super
   end
 
-  def make_choice(hand)
-    take_card(hand) if hand.cards_count_score(cards) < 17 && cards.size != 3
+  def make_choice(deck)
+    take_card(deck) if hand.cards_count_score < 17 && hand.cards.size != 3
   end
 end

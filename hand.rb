@@ -5,10 +5,10 @@ class Hand
   attr_accessor :cards
 
   def initialize
-    @cards = Deck.new.cards
+    @cards = []
   end
 
-  def cards_count_score(cards)
+  def cards_count_score
     sum = 0
     ace_count = 0
     cards.each do |card|

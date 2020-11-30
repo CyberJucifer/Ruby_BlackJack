@@ -6,7 +6,7 @@ require_relative 'card'
 require_relative 'dealer'
 require_relative 'deck'
 require_relative 'hand'
-require_relative 'game_output'
+require_relative 'interface'
 require_relative 'game'
 
 Game.new

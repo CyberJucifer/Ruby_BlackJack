@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # Output interface
-module Output
+class Interface
   def game_greetings
     puts 'Введите ваше имя:'
   end
@@ -10,12 +10,16 @@ module Output
     raise 'Name can not be empty!' if player.name.empty?
   end
 
-  def player_greetings(player)
+  def player_greetings
     puts "Привет, #{player.name}! Игра начинается!"
   end
 
   def out_of_money
     puts 'Игра окончена! У одного из игроков не осталось денег!'
+  end
+
+  def make_choice
+    gets.chomp.to_i
   end
 
   def show_interface
@@ -28,9 +32,9 @@ module Output
     print "Карты дилера: \t"
     if game_over
       show_cards(dealer)
-      print "\t Очки дилера: #{hand.cards_count_score(dealer.cards)}"
+      print "\t Очки дилера: #{dealer.hand.cards_count_score}"
     else
-      dealer.cards.each { print '*' }
+      dealer.hand.cards.each { print '*' }
       print "\t Очки дилера: **"
     end
     print " Банк дилера: #{dealer.bank}$"
@@ -39,7 +43,7 @@ module Output
   def player_interface
     print "Ваши карты: \t"
     show_cards(player)
-    print "\t Ваши очки: #{hand.cards_count_score(player.cards)}"
+    print "\t Ваши очки: #{player.hand.cards_count_score}"
     print "\t Ваш банк: #{player.bank}$"
   end
 
@@ -68,7 +72,7 @@ module Output
   end
 
   def show_cards(dealer_or_player)
-    dealer_or_player.cards.each { |card| print card.value, card.suit }
+    dealer_or_player.hand.cards.each { |card| print card.value, card.suit }
   end
 
   def draw

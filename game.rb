@@ -1,17 +1,15 @@
 # frozen_string_literal: true
 
 # Game
-class Game
-  include Output
-
-  attr_accessor :player, :dealer, :game_over, :bank, :play_again, :hand
+class Game < Interface
+  attr_accessor :player, :dealer, :game_over, :bank, :play_again, :deck, :interface
 
   def initialize
     game_greetings
     @player = Player.new(gets.chomp)
     valid_name
     @dealer = Dealer.new
-    player_greetings(player)
+    player_greetings
     start_game
   end
 
@@ -19,7 +17,7 @@ class Game
     @game_over = false
     @play_again = false
     @bank = 0
-    @hand = Hand.new
+    @deck = Deck.new
     2.times { take_cards }
     make_bets
     loop { play }
@@ -28,13 +26,13 @@ class Game
   protected
 
   def take_cards
-    player.take_card(hand)
-    dealer.take_card(hand)
+    player.take_card(deck)
+    dealer.take_card(deck)
   end
 
   def play
     do_play_again if play_again
-    self.game_over = true if player.cards.size > 2 && dealer.cards.size > 2
+    self.game_over = true if player.hand.cards.size > 2 && dealer.hand.cards.size > 2
     if game_over
       show_game_over_interface
     else
@@ -58,13 +56,14 @@ class Game
   end
 
   def clear_cards
-    player.cards.clear
-    dealer.cards.clear
+    player.hand.cards.clear
+    dealer.hand.cards.clear
   end
 
   def do_play_again
+    self.deck = Deck.new
     clear_cards
-    take_cards
+    2.times { take_cards }
     make_bets
     self.play_again = false
   end
@@ -72,14 +71,14 @@ class Game
   def choice_menu_operations
     case make_choice
     when 1
-      return max_cards if player.cards.size == 3
+      return max_cards if player.hand.cards.size == 3
 
-      player.take_card(hand)
-      dealer.make_choice(hand)
+      player.take_card(deck)
+      dealer.make_choice(deck)
     when 2
       self.game_over = true
     when 3
-      dealer.make_choice(hand)
+      dealer.make_choice(deck)
     when 0
       exit
     end
@@ -109,7 +108,7 @@ class Game
   end
 
   def count_points(user)
-    hand.cards_count_score(user.cards)
+    user.hand.cards_count_score
   end
 
   def play_again_menu_operations
@@ -120,10 +119,6 @@ class Game
     when 0
       exit
     end
-  end
-
-  def make_choice
-    gets.chomp.to_i
   end
 
   def make_bets

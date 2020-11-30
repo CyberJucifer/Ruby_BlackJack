@@ -2,15 +2,15 @@
 
 # User
 class User
-  attr_accessor :name, :bank, :cards
+  attr_accessor :name, :bank, :hand
 
   def initialize(name)
     @name = name
     @bank = 100
-    @cards = []
+    @hand = Hand.new
   end
 
-  def take_card(hand)
-    cards << hand.cards.shift
+  def take_card(deck)
+    hand.cards << deck.cards.shift
   end
 end
